@@ -34,3 +34,8 @@ Requirement:
 Backend funktioniert in Python (Backend integrierd)
 Frontend wird in Python mit Thinker gemacht.
 Datenbank natürlich SQL mit MY SQL
+
+Benötigte Instalationen:
+Python      https://www.python.org/downloads/
+Git         https://git-scm.com/install/windows
+MY SQL      Vorinstaliert auf den Schulrechnern 
