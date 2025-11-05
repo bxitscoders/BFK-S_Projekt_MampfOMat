@@ -31,3 +31,31 @@ class HomePage(tk.Frame):
                 width=180, height=160
             )
             btn.grid(row=i//3, column=i%3, padx=20, pady=20)
+
+# Anmeldebutton unter den Produkten links
+  # ⬇️ Anmelde-Button unter den Produkten links unten
+        self.bottom_frame = tk.Frame(self)
+        self.bottom_frame.pack(fill="x", pady=10, padx=20)
+
+        self.login_button = tk.Button(
+            self.bottom_frame,
+            text="🔐 Anmelden",
+            font=("Arial", 12),
+            bg="#e0e0e0",
+            relief="raised",
+            command=self.open_login
+        )
+        self.login_button.pack(side="left", anchor="sw")
+
+    def open_login(self):
+        # hier kannst du später eine Login-Seite oder Popup öffnen
+        popup = tk.Toplevel(self)
+        popup.title("Anmeldung")
+        popup.geometry("300x200")
+        tk.Label(popup, text="Login-Fenster", font=("Arial", 14)).pack(pady=20)
+        tk.Label(popup, text="Benutzername:").pack()
+        tk.Entry(popup).pack()
+        tk.Label(popup, text="Passwort:").pack()
+        tk.Entry(popup, show="*").pack()
+        tk.Button(popup, text="Anmelden", command=popup.destroy).pack(pady=10)
+       
