@@ -68,10 +68,10 @@ class HomePage(tk.Frame):
         products_container.grid_columnconfigure(0, weight=1)
         products_container.grid_rowconfigure(0, weight=1)
         
-        # Scrollbarer Bereich
+        # Scrollbarer Bereich - verbessertes Scrolling
         canvas = tk.Canvas(
             products_container,
-            bg='#ffffff',  # Elegantes Weiß
+            bg='#ffffff',
             highlightthickness=0,
             bd=0
         )
@@ -83,7 +83,7 @@ class HomePage(tk.Frame):
             width=12
         )
         
-        self.products_frame = tk.Frame(canvas, bg='#ffffff')  # Elegantes Weiß
+        self.products_frame = tk.Frame(canvas, bg='#ffffff')
         
         # Scrollbar konfigurieren
         canvas.configure(yscrollcommand=scrollbar.set)
@@ -93,23 +93,40 @@ class HomePage(tk.Frame):
         scrollbar.grid(row=0, column=1, sticky="ns")
         
         # Frame im Canvas platzieren
-        canvas_window = canvas.create_window((0, 0), window=self.products_frame, anchor="nw")
+        self.canvas_window = canvas.create_window((0, 0), window=self.products_frame, anchor="nw")
         
-        # Responsive Verhalten
+        # Verbesserte Scroll-Konfiguration
         def configure_scroll_region(event=None):
+            # Scroll-Region aktualisieren
             canvas.configure(scrollregion=canvas.bbox("all"))
-            # Frame-Breite an Canvas anpassen
-            canvas_width = canvas.winfo_width()
-            canvas.itemconfig(canvas_window, width=canvas_width)
+            
+            # Frame-Breite an Canvas anpassen für responsives Verhalten
+            if canvas.winfo_width() > 1:
+                canvas.itemconfig(self.canvas_window, width=canvas.winfo_width())
         
+        # Event-Bindings
         self.products_frame.bind("<Configure>", configure_scroll_region)
         canvas.bind("<Configure>", configure_scroll_region)
         
-        # Mausrad-Scrolling
+        # Verbessertes Mausrad-Scrolling
         def on_mousewheel(event):
-            canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+            # Nur scrollen wenn Maus über Canvas ist
+            canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+            return "break"  # Event nicht weiterleiten
         
-        canvas.bind_all("<MouseWheel>", on_mousewheel)
+        # Mausrad-Events besser binden
+        def bind_mousewheel(event):
+            canvas.bind_all("<MouseWheel>", on_mousewheel)
+        
+        def unbind_mousewheel(event):
+            canvas.unbind_all("<MouseWheel>")
+        
+        # Nur bei Mouse-Over scrollen aktivieren
+        canvas.bind('<Enter>', bind_mousewheel)
+        canvas.bind('<Leave>', unbind_mousewheel)
+        
+        # Speichere Canvas-Referenz für andere Methoden
+        self.canvas = canvas
 
     def create_footer(self):
         """Erstellt den Footer mit Admin-Login"""
@@ -167,8 +184,8 @@ class HomePage(tk.Frame):
         """Erstellt eine moderne Produktkarte mit flüssigem Schatten-Hover-Effekt"""
         card = create_modern_card(self.products_frame)
         
-        # Card-Layout konfigurieren - feste Größe, kein Zoom
-        card.configure(width=300, height=350)
+        # Card-Layout konfigurieren - optimierte Größe für bessere Proportionen
+        card.configure(width=320, height=380)
         card.grid_propagate(False)
         card.grid_columnconfigure(0, weight=1)
         
@@ -183,9 +200,9 @@ class HomePage(tk.Frame):
             image_path = product.get("image", f"assets/{product['name']}.png")
             img = Image.open(image_path)
             
-            # Weniger aggressives Zuschneiden - mehr vom Bild zeigen
+            # Bessere Proportionen - quadratischer Ansatz
             img_width, img_height = img.size
-            target_ratio = 4/3  # Weniger extremes Seitenverhältnis
+            target_ratio = 1.2  # Leicht rechteckig für natürlicheren Look
             current_ratio = img_width / img_height
             
             if current_ratio > target_ratio:
@@ -197,8 +214,8 @@ class HomePage(tk.Frame):
                 top = (img_height - new_height) // 2
                 img = img.crop((0, top, img_width, top + new_height))
             
-            # Nur eine Bildversion - keine Vergrößerung
-            img_resized = img.resize((260, 195), Image.Resampling.LANCZOS)
+            # Größeres Bild für bessere Darstellung
+            img_resized = img.resize((280, 220), Image.Resampling.LANCZOS)
             tk_img = ImageTk.PhotoImage(img_resized)
             
             self.images.append(tk_img)
@@ -300,19 +317,14 @@ class HomePage(tk.Frame):
         )
         select_btn.grid(row=4, column=0, pady=(LAYOUT['padding_small'], LAYOUT['padding_medium']))
         
-        # Button Hover-Effekt mit Animation - Premium Look
-        def animate_button_hover(button, target_color, target_text_color):
-            """Animiert den Button-Hover-Effekt"""
-            def change_color():
-                button.configure(bg=target_color, fg=target_text_color)
-                # Erhöhter 3D-Effekt
-                button.configure(relief='raised', bd=3)
-            
-            # Verzögert für smooth transition
-            button.after(50, change_color)
-        
+        # Button Hover-Effekt - vereinfacht
         def on_btn_enter(event):
-            animate_button_hover(select_btn, COLORS['button_gold_hover'], COLORS['text_light'])
+            select_btn.configure(
+                bg=COLORS['button_gold_hover'], 
+                fg=COLORS['text_light'],
+                relief='raised',
+                bd=3
+            )
         
         def on_btn_leave(event):
             select_btn.configure(
@@ -325,91 +337,66 @@ class HomePage(tk.Frame):
         select_btn.bind("<Enter>", on_btn_enter)
         select_btn.bind("<Leave>", on_btn_leave)
         
-        # Schatten-Hover-Effekt für die Karte mit flüssiger Animation
-        def animate_shadow(target_intensity, steps=12):
-            """Animiert den Schatten-Effekt schrittweise für flüssige Transition"""
-            if card.animation_id:
-                card.after_cancel(card.animation_id)
-            
-            start_intensity = card.shadow_intensity
-            intensity_step = (target_intensity - start_intensity) / steps
-            
-            def step_shadow_animation(current_step):
-                if current_step <= steps:
-                    # Neue Schatten-Intensität berechnen
-                    new_intensity = start_intensity + (intensity_step * current_step)
-                    card.shadow_intensity = new_intensity
-                    
-                    # Schatten-Farbe basierend auf Intensität
-                    shadow_alpha = int(new_intensity * 20)  # 0-160 Alpha-Bereich
-                    
-                    # Verschiedene Schatten-Ebenen für realistischen Effekt
-                    if new_intensity > 0:
-                        # Gelber Glow-Effekt statt Blau
-                        glow_intensity = min(4, int(new_intensity / 2))
-                        
-                        card.configure(
-                            highlightbackground=COLORS['button_gold'],  # Gold-Rahmen
-                            highlightthickness=glow_intensity,
-                            relief='raised',
-                            bg=COLORS['background_hover']  # Helles Hover
-                        )
-                    else:
-                        # Kein Schatten
-                        card.configure(
-                            highlightbackground=COLORS['border_light'],
-                            highlightthickness=1,
-                            relief='flat',
-                            bg=COLORS['background_card']
-                        )
-                    
-                    # Hintergrund für alle Widgets aktualisieren
-                    if new_intensity > 0:
-                        self.update_card_background(card, COLORS['background_hover'])
-                    else:
-                        self.update_card_background(card, COLORS['background_card'])
-                    
-                    # Nächster Schritt
-                    if current_step < steps:
-                        card.animation_id = card.after(25, lambda: step_shadow_animation(current_step + 1))  # 25ms = sehr smooth
-                    else:
-                        card.animation_id = None
-            
-            step_shadow_animation(0)
-        
-        def card_shadow_in(event):
-            if not card.is_hovering:  # Verhindert mehrfache Aktivierung
+        # Events binden - vereinfacht für bessere Performance
+        def card_hover_in(event):
+            if not card.is_hovering:
                 card.is_hovering = True
-                
-                # Sanfter Schatten einblenden
-                animate_shadow(card.max_shadow_intensity)
+                # Einfacher visueller Effekt ohne Animation
+                card.configure(
+                    bg=COLORS['background_hover'],
+                    highlightbackground=COLORS['button_gold'],
+                    highlightthickness=2,
+                    relief='raised'
+                )
+                self.update_card_background(card, COLORS['background_hover'])
         
-        def card_shadow_out(event):
-            if card.is_hovering:  # Nur wenn gerade gehovered
+        def card_hover_out(event):
+            if card.is_hovering:
                 card.is_hovering = False
-                
-                # Schatten ausblenden
-                animate_shadow(0)
+                # Zurücksetzen ohne Animation
+                card.configure(
+                    bg=COLORS['background_card'],
+                    highlightbackground=COLORS['border_light'],
+                    highlightthickness=1,
+                    relief='flat'
+                )
+                self.update_card_background(card, COLORS['background_card'])
         
-        # Events binden
-        card.bind("<Enter>", card_shadow_in)
-        card.bind("<Leave>", card_shadow_out)
+        # Direkte Event-Bindung ohne komplexe Weiterleitung
+        card.bind("<Enter>", card_hover_in)
+        card.bind("<Leave>", card_hover_out)
         
-        # Events an alle Child-Widgets weiterleiten
-        def bind_to_children(widget):
-            widget.bind("<Enter>", card_shadow_in)
-            widget.bind("<Leave>", card_shadow_out)
-            for child in widget.winfo_children():
-                bind_to_children(child)
-        
-        bind_to_children(card)
-        
-        # Klick-Funktionalität
+        # Klick-Event für sofortige Responsivität - NACH allen Element-Erstellungen
         def card_click(event):
+            # Sofort zur Produktseite ohne Verzögerung
             self.controller.show_frame("ProductPage", product=product)
+            return "break"  # Event nicht weiterleiten
         
-        card.bind("<Button-1>", card_click)
-        card.configure(cursor='hand2')
+        # Alle Elemente der Karte klickbar machen für beste Performance
+        clickable_elements = [card]
+        
+        # Bild klickbar machen
+        if hasattr(card, 'img_label'):
+            clickable_elements.append(card.img_label)
+        
+        # Name klickbar machen
+        clickable_elements.append(name_label)
+        
+        # Preis klickbar machen falls vorhanden
+        if 'price' in product and 'price_label' in locals():
+            clickable_elements.extend([price_label, price_hint])
+            
+        # Beschreibung klickbar machen falls vorhanden
+        if 'description' in product and product['description'] and 'desc_label' in locals():
+            clickable_elements.append(desc_label)
+        
+        # Click-Events und Cursor für alle Elemente setzen
+        for element in clickable_elements:
+            try:
+                element.bind("<Button-1>", card_click)
+                element.configure(cursor='hand2')
+            except:
+                pass  # Ignoriere Elemente die cursor nicht unterstützen
         
         return card
     
