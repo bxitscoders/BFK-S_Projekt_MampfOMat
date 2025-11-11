@@ -1,5 +1,5 @@
 """
-Moderne UI-Stile für den Bäckerautomaten
+Moderne UI-Stile für den MampfOMat
 Inspiriert von Premium-Automarken wie Mercedes-Benz
 """
 
@@ -33,12 +33,14 @@ COLORS = {
     'button_primary_hover': '#106ebe', # Dunkleres Blau
     'button_secondary': '#6c757d',  # Grauer Button
     'button_secondary_hover': '#5a6268', # Dunkler grau
-    'button_success': '#28a745',    # Grüner Erfolg-Button
-    'button_success_hover': '#218838', # Dunkler grün
+    'button_success': '#d4af37',    # Gold statt Grün für Erfolg
+    'button_success_hover': '#b8941f', # Dunkler gold
     'button_danger': '#dc3545',     # Roter Gefahr-Button
     'button_danger_hover': '#c82333', # Dunkler rot
     'button_gold': '#d4af37',       # Gold-Button für besondere Aktionen
     'button_gold_hover': '#b8941f',  # Dunkler gold
+    'button_cart': '#f4e04d',       # Helles Gelb für Warenkorb
+    'button_cart_hover': '#e6d448', # Dunkler helles Gelb
     
     # Rahmen und Schatten
     'border_light': '#dee2e6',      # Helle Rahmen
@@ -132,6 +134,18 @@ BUTTON_STYLES = {
         'cursor': 'hand2',
         'activebackground': COLORS['button_gold_hover'],
         'activeforeground': COLORS['text_light']
+    },
+    'cart': {
+        'bg': COLORS['button_cart'],
+        'fg': COLORS['primary_dark'],
+        'font': FONTS['button'],
+        'relief': 'raised',
+        'bd': 2,
+        'padx': 25,
+        'pady': 12,
+        'cursor': 'hand2',
+        'activebackground': COLORS['button_cart_hover'],
+        'activeforeground': COLORS['primary_dark']
     },
     'card': {
         'bg': COLORS['background_card'],

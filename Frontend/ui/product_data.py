@@ -1,5 +1,5 @@
 """
-Zentrale Produktdatenbank für den Bäckerautomaten
+Zentrale Produktdatenbank für den MampfOMat
 Hier werden alle Produktinformationen verwaltet
 """
 
@@ -87,5 +87,12 @@ def get_product_by_id(product_id):
     """Gibt ein spezifisches Produkt zurück"""
     for product in PRODUCTS:
         if product["id"] == product_id:
+            return product
+    return None
+
+def get_product_by_name(product_name):
+    """Gibt ein Produkt anhand des Namens zurück"""
+    for product in PRODUCTS:
+        if product["name"] == product_name:
             return product
     return None
