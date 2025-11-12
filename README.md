@@ -1,42 +1,103 @@
-# BFK-S_Projekt_MampfOMat
+# 🍰 MampfOMat
 
-Dieses Projekt wurde Programmiert von Oliver,Beria,Mert und Nico.
+Ein Projekt von Oliver, Beria, Mert und Nico
 
-Dokumentation
+---
 
-In diesem Projekt geht es darum Eine Software zu erstellen um unsere eigene Idee zu verwirklichen.
+## Was ist das hier?
 
-Usere Idee ist ein Automat der Bestellungen von Essen in form von Backwaren entgegen nimmt,
-diese in ein Warenkorb packt und dann Automatisch raus gibt.
+Das MampfOMat ist ein Automat für Backwaren, den wir als Schulprojekt entwickelt haben. Die Idee ist simpel: Du gehst hin, wählst aus was du möchtest, packst es in den Warenkorb und kaufst es. Wie ein Online-Shop, nur für einen echten Automaten.
 
-Das Nutzen dieses Projekts ist das wir einen Vorgang hiermit leichter machen und den Menschen Arbeit abnehmen.
-Da wir in eine Zeit kommen wo wir immer mehr Roboter verwenden und immer mehr Automatisieren passt es perfekt dazu.
+Wir dachten uns, dass es praktisch wäre wenn man nicht immer anstehen muss, besonders in der Schule wo die Pausen kurz sind.
 
-Fallbeispiele:
+## Wo könnte man das brauchen?
 
-Wir könnten so einen Automaten in der Schule aufstellen.
-So könnten sich Schüler und Schülerinnen schnell und einfach etwas zu essen in der kleinen Pause holen.
-Man kann hier eine ganze Bäckerei ersetzen und das schnell, einfach, günstig und als gesamtlösung.
+**In der Schule** - das war unser erster Gedanke. Schnell was holen ohne Warteschlange.
 
+**Im Büro** - wenn die Kantine zu hat oder man Hunger zwischendurch hat.
 
-Vorgaben an das Projekt:
-CRUD-Szenario
-WPF & MVVM - Architektur
-Dokumentation der Software (Projekt-Beschreibung (Architektur-Darstellung bzw. Technologie-Schema), UML-Diagramme (Klassendiagramme, UseCase-Diagramme, DB-Diagramme (ERM & RM), Struktogramm)
-Agiles Projektmanagement mit SCRUM
-Beachtung von S.O.L.I.D
+**Krankenhäuser** - für Besucher die lange warten müssen.
 
-Bewertungskriterien findest du [hier](
-https://itschulestuttgart1.sharepoint.com/sites/SAEFI/Freigegebene%20Dokumente/Forms/AllItems.aspx?id=%2Fsites%2FSAEFI%2FFreigegebene%20Dokumente%2FLS06%20Architektur%2DProjekt%2FProjektbewertung%5FSWProjekt%5Fv2%2Epdf&parent=%2Fsites%2FSAEFI%2FFreigegebene%20Dokumente%2FLS06%20Architektur%2DProjekt&p=true&ga=1)
+**Bahnhöfe** - wenn alles andere schon zu ist.
 
-Requirement:
+Eigentlich überall wo Leute mal schnell was zu essen brauchen.
 
-Backend funktioniert in Python (Backend integrierd)
-Frontend wird in Python mit Thinker gemacht.
-Datenbank natürlich SQL mit MY SQL
+## Wie funktioniert das technisch?
 
-Benötigte Instalationen:
-Python      https://www.python.org/downloads/
-Git         https://git-scm.com/install/windows
-MY SQL      Vorinstaliert auf den Schulrechnern
-XAMPP       Apache und MySQL starten ->  http://localhost/phpmyadmin/ -> Importieren klicken -> setup.sql Datei wählen - > OK --> Datenbank mampf 
+Wir haben das ganze in **Python** gemacht, weil wir das am besten können und es auf jedem Computer läuft.
+
+**Frontend:** Tkinter - sieht aus wie eine normale App, nichts besonderes aber funktioniert gut
+
+**Backend:** Ist direkt in Python mit drin, keine komplizierten Server oder so
+
+**Datenbank:** SQLite für die Entwicklung, später MySQL wenn es ernst wird
+
+**Design:** Haben versucht es wie WhatsApp aussehen zu lassen, weil das jeder kennt
+
+## Projektstruktur
+
+```
+MampfOMat/
+├── Frontend/
+│   ├── main.py              # Hier startet alles
+│   ├── ui/
+│   │   ├── app.py           # Hauptfenster
+│   │   ├── home_page.py     # Produktliste
+│   │   ├── product_page.py  # Einzelprodukt
+│   │   ├── cart_page.py     # Warenkorb
+│   │   ├── admin_page.py    # Für neue Produkte
+│   │   └── modern_styles.py # Farben und Schriften
+│   └── assets/              # Bilder
+├── db.sqlite3              # Datenbank
+└── README.md               # Das hier
+```
+
+## Ausprobieren
+
+Du brauchst:
+- Python (3.7 oder neuer)
+- Pillow für die Bilder: `pip install pillow`
+
+Dann einfach:
+```bash
+git clone https://github.com/bxitscoders/BFK-S_Projekt_MampfOMat.git
+cd BFK-S_Projekt_MampfOMat/Frontend
+python main.py
+```
+
+Das wars schon.
+
+## Was wir gelernt haben
+
+- Python GUIs sind nicht so schlecht wie alle sagen
+- Bilder richtig zu skalieren ist nervig
+- Ein gutes Design braucht Zeit
+- SQLite reicht für fast alles aus
+- Teamwork funktioniert besser mit Git
+
+## Team
+
+**Oliver** - Backend und Datenbank  
+**Beria** - Design und Benutzerführung  
+**Mert** - Frontend  
+**Nico** - Performance und Tests
+
+## Projekt-Anforderungen
+
+Mussten wir für die Schule machen:
+- ✅ CRUD (Erstellen, Lesen, Ändern, Löschen)
+- ✅ MVC Architektur  
+- ✅ Dokumentation
+- ✅ Git/SCRUM
+- ✅ S.O.L.I.D Prinzipien
+
+## Was noch kommen könnte
+
+- Echte Bezahlung
+- Statistiken welche Sachen am besten laufen  
+- Handy App zum Vorbestellen
+- Mehrere Sprachen
+
+---
+
+Falls Fragen sind oder was nicht läuft, einfach melden. 
