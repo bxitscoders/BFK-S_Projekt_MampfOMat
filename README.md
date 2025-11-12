@@ -38,4 +38,5 @@ Datenbank natürlich SQL mit MY SQL
 Benötigte Instalationen:
 Python      https://www.python.org/downloads/
 Git         https://git-scm.com/install/windows
-MY SQL      Vorinstaliert auf den Schulrechnern 
+MY SQL      Vorinstaliert auf den Schulrechnern
+XAMPP       Apache und MySQL starten ->  http://localhost/phpmyadmin/ -> Importieren klicken -> setup.sql Datei wählen - > OK --> Datenbank mampf 
