@@ -380,7 +380,7 @@ class ProductPage(tk.Frame):
             "👨‍🍳 Handwerklich gebacken jeden Morgen", 
             "🥨 Traditionelle Rezeptur seit 1952",
             "⏰ Haltbarkeit: 1-2 Tage",
-            "🌡️ Lagerung: Bei Raumtemperatur",
+            "🌞 Lagerung: Bei Raumtemperatur",
             "🥖 Ohne Konservierungsstoffe",
             "✅ Vegetarisch geeignet",
             "📦 Einzeln verpackt für Hygiene"
