@@ -118,8 +118,57 @@ $ cd <root prject>
 
 $ pip install -r requirements.txt
 
+Wenn die Datenbak eingerichtet werden muss:
+
+$ python manage.py makemigrations
+$ python manage.py migrate
+
 Um runserver zu starten:
 
 $ cd config
 
 $ python .\manage.py runserver
+
+## REST API Endpunkte
+
+- **Produkte:**
+	- Alle Produkte: GET /api/produkte/
+	- Einzelnes Produkt: GET /api/produkte/<id>/
+	- Produkt anlegen: POST /api/produkte/
+	- Produkt ändern: PUT /api/produkte/<id>/
+	- Produkt löschen: DELETE /api/produkte/<id>/
+    Bsp: http://127.0.0.1:8000/api/produkte/
+
+- **Bestellungen:**
+	- Alle Bestellungen: GET /api/bestellungen/
+	- Einzelne Bestellung: GET /api/bestellungen/<id>/
+	- Bestellung anlegen: POST /api/bestellungen/
+	- Bestellung ändern: PUT /api/bestellungen/<id>/
+	- Bestellung löschen: DELETE /api/bestellungen/<id>/
+    Bsp: http://127.0.0.1:8000/api/bestellungen/1/
+
+### Beispiel-Requests (curl)
+
+#### Produkt anlegen
+
+curl -X POST http://127.0.0.1:8000/api/produkte/ \
+	-H "Content-Type: application/json" \
+	-d "{\"name\": \"Pizza\", \"preis\": \"7.99\", \"beschreibung\": \"Lecker\"}"
+
+
+#### Bestellung anlegen (Produkt-ID anpassen)
+
+curl -X POST http://127.0.0.1:8000/api/bestellungen/ \
+	-H "Content-Type: application/json" \
+	-d "{\"produkt\": 1, \"menge\": 2, \"kunde\": \"Max Mustermann\"}"
+
+
+#### Alle Produkte anzeigen
+
+curl http://127.0.0.1:8000/api/produkte/
+
+
+#### Alle Bestellungen anzeigen
+
+curl http://127.0.0.1:8000/api/bestellungen/
+
