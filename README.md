@@ -1,9 +1,5 @@
 # 🍰 MampfOMat
 
-Ein Projekt von Oliver, Beria, Mert und Nico
-
----
-
 ## Was ist das hier?
 
 Das MampfOMat ist ein Automat für Backwaren, den wir als Schulprojekt entwickelt haben. Die Idee ist simpel: Du gehst hin, wählst aus was du möchtest, packst es in den Warenkorb und kaufst es. Wie ein Online-Shop, nur für einen echten Automaten.
@@ -36,7 +32,7 @@ Wir haben das ganze in **Python** gemacht, weil wir das am besten können und es
 
 ## Projektstruktur
 
-```
+
 MampfOMat/
 ├── Frontend/
 │   ├── main.py              # Hier startet alles
@@ -50,7 +46,7 @@ MampfOMat/
 │   └── assets/              # Bilder
 ├── db.sqlite3              # Datenbank
 └── README.md               # Das hier
-```
+
 
 ## Ausprobieren
 
@@ -59,14 +55,14 @@ Du brauchst:
 - Pillow für die Bilder: `pip install pillow`
 
 Dann einfach:
-```bash
+
 git clone https://github.com/bxitscoders/BFK-S_Projekt_MampfOMat.git
 cd BFK-S_Projekt_MampfOMat/Frontend
 python main.py
 
 Für die DB: 
 XAMPP starten ->  Apache und MySQL starten ->  http://localhost/phpmyadmin/ -> Importieren klicken -> setup.sql Datei wählen - > OK --> Datenbank mampf
-```
+
 
 Das wars schon.
 
@@ -101,10 +97,11 @@ Mussten wir für die Schule machen:
 - Handy App zum Vorbestellen
 - Mehrere Sprachen
 
----
+
 
 Falls Fragen sind oder was nicht läuft, einfach melden. 
 
+---
 
 ## Installationen:
 
@@ -121,6 +118,7 @@ $ pip install -r requirements.txt
 Wenn die Datenbak eingerichtet werden muss:
 
 $ python manage.py makemigrations
+
 $ python manage.py migrate
 
 Um runserver zu starten:
@@ -131,7 +129,8 @@ $ python .\manage.py runserver
 
 ## REST API Endpunkte
 
-- **Produkte:**
+Produkte:
+
 	- Alle Produkte: GET /api/produkte/
 	- Einzelnes Produkt: GET /api/produkte/<id>/
 	- Produkt anlegen: POST /api/produkte/
@@ -139,7 +138,8 @@ $ python .\manage.py runserver
 	- Produkt löschen: DELETE /api/produkte/<id>/
     Bsp: http://127.0.0.1:8000/api/produkte/
 
-- **Bestellungen:**
+Bestellungen:
+
 	- Alle Bestellungen: GET /api/bestellungen/
 	- Einzelne Bestellung: GET /api/bestellungen/<id>/
 	- Bestellung anlegen: POST /api/bestellungen/
