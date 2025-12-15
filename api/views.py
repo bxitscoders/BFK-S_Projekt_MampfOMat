@@ -1,9 +1,15 @@
+
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from .models import Product
-from .serializers import ProductSerializer
+from .models import Product, Order
+from .serializers import ProductSerializer, OrderSerializer
+
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all().order_by("id")
     serializer_class = ProductSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+
+
+# ViewSet für Bestellungen
+class OrderViewSet(viewsets.ModelViewSet):
+    queryset = Order.objects.all().order_by("-timestamp")
+    serializer_class = OrderSerializer
