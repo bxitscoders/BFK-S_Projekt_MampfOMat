@@ -8,7 +8,6 @@ from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import mm
 from ui.modern_styles import COLORS, FONTS, LAYOUT, create_modern_button
-from receipt_server import get_local_ip
 
 class ThankYouPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -113,13 +112,20 @@ class ThankYouPage(tk.Frame):
 
                 # Öffnen-Button unterhalb des QR-Codes
                 if not hasattr(self, 'open_btn'):
+                    def open_pdf():
+                        if self.pdf_path and os.path.exists(self.pdf_path):
+                            try:
+                                os.startfile(self.pdf_path)
+                            except Exception as e:
+                                print(f"Fehler beim Öffnen der PDF: {e}")
+                    
                     open_btn = create_modern_button(
                         self.qr_label.master,
-                        "PDF öffnen",
-                        style='secondary',
-                        command=lambda: os.startfile(self.pdf_path) if self.pdf_path and os.path.exists(self.pdf_path) else None
+                        "📄 Quittung öffnen",
+                        style='primary',
+                        command=open_pdf
                     )
-                    open_btn.pack(pady=(10,0))
+                    open_btn.pack(pady=(10, 0))
                     self.open_btn = open_btn
             except Exception as e:
                 print(f"Fehler beim Erzeugen der Quittung: {e}")
@@ -129,16 +135,13 @@ class ThankYouPage(tk.Frame):
             self.controller.clear_cart()
 
     def _generate_qr_for_pdf(self, pdf_path, size=220):
-        """Erzeugt ein QR-Bild (PIL.Image) mit URL zur PDF-Quittung"""
-        # Extrahiere Quittungsnummer aus dem Dateinamen
-        filename = os.path.basename(pdf_path)
+        """Erzeugt ein QR-Bild (PIL.Image) mit der Bestell-ID"""
+        # Extrahiere Bestell-ID aus dem Dateinamen
+        receipt_id = os.path.basename(pdf_path).replace('receipt_', '').replace('.pdf', '')
         
-        # Nutze lokale IP-Adresse für Netzwerk-Zugriff
-        local_ip = get_local_ip()
-        qr_url = f"http://{local_ip}:5000/receipt/{filename}"
-        
+        # QR-Code mit einfacher Bestell-ID
         qr = qrcode.QRCode(box_size=10, border=2, version=1, error_correction=qrcode.constants.ERROR_CORRECT_L)
-        qr.add_data(qr_url)
+        qr.add_data(f"MAMPFOMAT-{receipt_id}")
         qr.make(fit=True)
         img = qr.make_image(fill_color="black", back_color="white").convert('RGB')
         img = img.resize((size, size), Image.Resampling.LANCZOS)
