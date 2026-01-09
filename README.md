@@ -76,10 +76,10 @@ Das wars schon.
 
 ## Team
 
-**Oliver** - Backend und Datenbank  
-**Beria** - Design und Benutzerführung  
-**Mert** - Frontend  
-**Nico** - Performance und Tests
+**Oliver** - Rest API
+**Beria** - Datenbanken
+**Mert** - Frontend + Backend
+**Nico** - Frontend + Backend
 
 ## Projekt-Anforderungen
 
