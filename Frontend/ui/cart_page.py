@@ -24,8 +24,37 @@ class CartPage(tk.Frame):
 
     def complete_order(self):
         """Wechselt zur Danke-Seite und leert den Warenkorb."""
-        # Zeige die Danke-Seite
-        self.controller.show_frame("ThankYouPage")
+        # Bestelldaten zusammenstellen bevor der Warenkorb geleert wird
+        from ui.product_data import get_product_by_name
+
+        items = []
+        subtotal = 0.0
+        for name, qty in self.controller.cart.items():
+            product = get_product_by_name(name)
+            price = product['price'] if product and 'price' in product else 0.0
+            item_total = price * qty
+            items.append({
+                'name': name,
+                'quantity': qty,
+                'unit_price': price,
+                'total_price': item_total
+            })
+            subtotal += item_total
+
+        VAT_RATE = 0.19  # Standard MwSt. 19% (anpassbar)
+        vat_amount = subtotal * VAT_RATE
+        total = subtotal + vat_amount
+
+        order = {
+            'items': items,
+            'subtotal': subtotal,
+            'vat_rate': VAT_RATE,
+            'vat_amount': vat_amount,
+            'total': total
+        }
+
+        # Zeige die Danke-Seite und übergebe die Bestelldaten
+        self.controller.show_frame("ThankYouPage", order=order)
 
         # 🧹 Warenkorb leeren
         self.controller.cart.clear()
