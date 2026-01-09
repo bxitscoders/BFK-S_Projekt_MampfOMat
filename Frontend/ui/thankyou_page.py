@@ -106,7 +106,12 @@ class ThankYouPage(tk.Frame):
             try:
                 pdf_path = self._generate_receipt_pdf(order)
                 self.pdf_path = pdf_path
-                qr_img = self._generate_qr_for_pdf(pdf_path)
+                
+                # Erstelle auch eine Download-HTML-Seite
+                html_path = self._generate_download_html(pdf_path)
+                
+                # QR-Code mit HTML-Download-Link
+                qr_img = self._generate_qr_for_pdf(html_path)
                 self.qr_photo = ImageTk.PhotoImage(qr_img)
                 self.qr_label.configure(image=self.qr_photo)
 
@@ -134,14 +139,13 @@ class ThankYouPage(tk.Frame):
         if hasattr(self.controller, 'clear_cart'):
             self.controller.clear_cart()
 
-    def _generate_qr_for_pdf(self, pdf_path, size=220):
-        """Erzeugt ein QR-Bild (PIL.Image) mit der Bestell-ID"""
-        # Extrahiere Bestell-ID aus dem Dateinamen
-        receipt_id = os.path.basename(pdf_path).replace('receipt_', '').replace('.pdf', '')
+    def _generate_qr_for_pdf(self, html_path, size=220):
+        """Erzeugt ein QR-Bild (PIL.Image) mit Link zur Download-HTML"""
+        # Nutze file:// URL für lokale HTML-Datei
+        file_url = f"file:///{os.path.abspath(html_path).replace(chr(92), '/')}"
         
-        # QR-Code mit einfacher Bestell-ID
         qr = qrcode.QRCode(box_size=10, border=2, version=1, error_correction=qrcode.constants.ERROR_CORRECT_L)
-        qr.add_data(f"MAMPFOMAT-{receipt_id}")
+        qr.add_data(file_url)
         qr.make(fit=True)
         img = qr.make_image(fill_color="black", back_color="white").convert('RGB')
         img = img.resize((size, size), Image.Resampling.LANCZOS)
@@ -221,3 +225,140 @@ class ThankYouPage(tk.Frame):
         c.save()
 
         return pdf_path
+
+    def _generate_download_html(self, pdf_path):
+        """Erzeugt eine HTML-Datei mit Download-Link zur PDF"""
+        receipts_dir = os.path.dirname(pdf_path)
+        html_filename = os.path.basename(pdf_path).replace('.pdf', '.html')
+        html_path = os.path.join(receipts_dir, html_filename)
+        
+        pdf_filename = os.path.basename(pdf_path)
+        
+        html_content = f"""<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAMPFOMAT - Quittung</title>
+    <style>
+        * {{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }}
+        body {{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }}
+        .container {{
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }}
+        .header {{
+            margin-bottom: 30px;
+        }}
+        .logo {{
+            font-size: 48px;
+            margin-bottom: 15px;
+        }}
+        h1 {{
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }}
+        .subtitle {{
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }}
+        .receipt-id {{
+            color: #3498db;
+            font-weight: bold;
+            margin-top: 15px;
+            font-size: 16px;
+        }}
+        .download-btn {{
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 30px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            border: none;
+        }}
+        .download-btn:hover {{
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }}
+        .download-btn:active {{
+            transform: translateY(0);
+        }}
+        .info {{
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid #ecf0f1;
+            color: #7f8c8d;
+            font-size: 13px;
+            line-height: 1.6;
+        }}
+        .check-icon {{
+            font-size: 60px;
+            margin-bottom: 15px;
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="check-icon">✅</div>
+            <h1>Danke für Ihre Bestellung!</h1>
+            <p class="subtitle">Ihre frischen Backwaren werden gerade zubereitet.</p>
+            <div class="receipt-id">Quittungs-ID: {os.path.basename(pdf_path).replace('receipt_', '').replace('.pdf', '')}</div>
+        </div>
+        
+        <button class="download-btn" onclick="downloadPDF()">📥 Quittung herunterladen</button>
+        
+        <div class="info">
+            <p>👉 Klicken Sie auf den Button, um Ihre Quittung herunterzuladen.</p>
+            <p>💾 Die PDF wird auf Ihrem Gerät gespeichert.</p>
+            <p>📱 Sie können die Quittung jederzeit anzeigen oder ausdrucken.</p>
+        </div>
+    </div>
+
+    <script>
+        function downloadPDF() {{
+            const link = document.createElement('a');
+            link.href = '{pdf_filename}';
+            link.download = '{pdf_filename}';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }}
+        
+        // Auto-Download beim Laden (optional)
+        window.addEventListener('load', function() {{
+            // Kommentar: Statt auto-download, warte auf Nutzer-Klick
+        }});
+    </script>
+</body>
+</html>"""
+        
+        with open(html_path, 'w', encoding='utf-8') as f:
+            f.write(html_content)
+        
+        return html_path
