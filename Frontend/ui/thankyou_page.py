@@ -128,10 +128,11 @@ class ThankYouPage(tk.Frame):
             self.controller.clear_cart()
 
     def _generate_qr_for_pdf(self, pdf_path, size=220):
-        """Erzeugt ein QR-Bild (PIL.Image) das auf die PDF-Datei verweist."""
-        data = f"file://{os.path.abspath(pdf_path)}"
-        qr = qrcode.QRCode(box_size=10, border=2)
-        qr.add_data(data)
+        """Erzeugt ein QR-Bild (PIL.Image) mit der Quittungsnummer."""
+        # Extrahiere Quittungsnummer aus dem Dateinamen
+        receipt_id = os.path.basename(pdf_path).replace('receipt_', '').replace('.pdf', '')
+        qr = qrcode.QRCode(box_size=10, border=2, version=1, error_correction=qrcode.constants.ERROR_CORRECT_L)
+        qr.add_data(f"MAMPFOMAT-{receipt_id}")
         qr.make(fit=True)
         img = qr.make_image(fill_color="black", back_color="white").convert('RGB')
         img = img.resize((size, size), Image.Resampling.LANCZOS)
