@@ -2,6 +2,7 @@ import tkinter as tk
 import os
 import io
 import time
+import base64
 import qrcode
 from PIL import Image, ImageTk
 from reportlab.lib.pagesizes import A4
@@ -135,9 +136,25 @@ class ThankYouPage(tk.Frame):
             except Exception as e:
                 print(f"Fehler beim Erzeugen der Quittung: {e}")
 
+        try:
+            youtube_url = "https://www.youtube.com/watch?v=Aq5WXmQQooo&list=RDAq5WXmQQooo&start_radio=1"
+            youtube_qr_img = self._generate_simple_qr(youtube_url, size=120)
+            self.youtube_qr_photo = ImageTk.PhotoImage(youtube_qr_img)
+            self.youtube_qr_label.configure(image=self.youtube_qr_photo)
+        except Exception as e:
+            print(f"Fehler beim Erzeugen des YouTube QR-Codes: {e}")
+
         # Automatisches Leeren des Warenkorbs bei Bestellabschluss (falls noch nicht geschehen)
         if hasattr(self.controller, 'clear_cart'):
             self.controller.clear_cart()
+
+        """Erzeugt ein einfaches QR-Bild für URLs (z.B. YouTube)"""
+        qr = qrcode.QRCode(box_size=10, border=2, version=1, error_correction=qrcode.constants.ERROR_CORRECT_L)
+        qr.add_data(url)
+        qr.make(fit=True)
+        img = qr.make_image(fill_color="black", back_color="white").convert('RGB')
+        img = img.resize((size, size), Image.Resampling.LANCZOS)
+        return img
 
     def _generate_qr_for_pdf(self, html_path, size=220):
         """Erzeugt ein QR-Bild (PIL.Image) mit Link zur Download-HTML"""
@@ -227,12 +244,16 @@ class ThankYouPage(tk.Frame):
         return pdf_path
 
     def _generate_download_html(self, pdf_path):
-        """Erzeugt eine HTML-Datei mit Download-Link zur PDF"""
+        """Erzeugt eine HTML-Datei mit eingebetteter PDF zum Download"""
         receipts_dir = os.path.dirname(pdf_path)
         html_filename = os.path.basename(pdf_path).replace('.pdf', '.html')
         html_path = os.path.join(receipts_dir, html_filename)
         
         pdf_filename = os.path.basename(pdf_path)
+        
+        # Lese PDF und encode als base64
+        with open(pdf_path, 'rb') as f:
+            pdf_data = base64.b64encode(f.read()).decode('utf-8')
         
         html_content = f"""<!DOCTYPE html>
 <html lang="de">
@@ -334,26 +355,36 @@ class ThankYouPage(tk.Frame):
         <button class="download-btn" onclick="downloadPDF()">📥 Quittung herunterladen</button>
         
         <div class="info">
-            <p>👉 Klicken Sie auf den Button, um Ihre Quittung herunterzuladen.</p>
+            <p>👉 Klicken Sie auf den Button, um Ihre Quittung zu speichern.</p>
             <p>💾 Die PDF wird auf Ihrem Gerät gespeichert.</p>
             <p>📱 Sie können die Quittung jederzeit anzeigen oder ausdrucken.</p>
         </div>
     </div>
 
     <script>
+        // PDF als base64 (eingebettet)
+        const pdfBase64 = "{pdf_data}";
+        
         function downloadPDF() {{
+            // Konvertiere base64 zu binary
+            const byteCharacters = atob(pdfBase64);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {{
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }}
+            const byteArray = new Uint8Array(byteNumbers);
+            
+            // Erstelle Blob und Download-Link
+            const blob = new Blob([byteArray], {{ type: 'application/pdf' }});
+            const url = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
-            link.href = '{pdf_filename}';
+            link.href = url;
             link.download = '{pdf_filename}';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
         }}
-        
-        // Auto-Download beim Laden (optional)
-        window.addEventListener('load', function() {{
-            // Kommentar: Statt auto-download, warte auf Nutzer-Klick
-        }});
     </script>
 </body>
 </html>"""
