@@ -148,14 +148,6 @@ class ThankYouPage(tk.Frame):
         if hasattr(self.controller, 'clear_cart'):
             self.controller.clear_cart()
 
-        """Erzeugt ein einfaches QR-Bild für URLs (z.B. YouTube)"""
-        qr = qrcode.QRCode(box_size=10, border=2, version=1, error_correction=qrcode.constants.ERROR_CORRECT_L)
-        qr.add_data(url)
-        qr.make(fit=True)
-        img = qr.make_image(fill_color="black", back_color="white").convert('RGB')
-        img = img.resize((size, size), Image.Resampling.LANCZOS)
-        return img
-
     def _generate_qr_for_pdf(self, html_path, size=220):
         """Erzeugt ein QR-Bild (PIL.Image) mit Link zur Download-HTML"""
         # Nutze file:// URL für lokale HTML-Datei
