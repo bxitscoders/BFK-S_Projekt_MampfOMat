@@ -10,3 +10,7 @@ PyJWT==2.10.1
 setuptools==80.9.0
 sqlparse==0.5.3
 tzdata==2025.2
+
+# Zusätzliche Abhängigkeiten für PDF- und QR-Generierung
+reportlab>=3.6
+qrcode>=7.3
