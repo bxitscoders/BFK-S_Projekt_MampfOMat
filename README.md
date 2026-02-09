@@ -147,14 +147,23 @@ Bestellungen:
 	- Bestellung löschen: DELETE /api/bestellungen/<id>/
     Bsp: http://127.0.0.1:8000/api/bestellungen/1/
 
-### Beispiel-Requests (curl)
 
-#### Produkt anlegen
+##Beispiel-Requests (curl)
+
+### JWT für Authentifizierung
+
+$response = Invoke-RestMethod -Uri "http://localhost:8000/api/token/" -Method POST -Headers @{ "Content-Type" = "application/json" } -Body '{ "username": "admin", "password": "admin" }'
+$token = $response.access
+
+### Produkt anlegen
 
 curl -X POST http://127.0.0.1:8000/api/produkte/ \
 	-H "Content-Type: application/json" \
 	-d "{\"name\": \"Pizza\", \"preis\": \"7.99\", \"beschreibung\": \"Lecker\"}"
 
+### Produkt anlegen mit Bearer Token:
+
+Invoke-WebRequest -Uri "http://localhost:8000/api/produkte/" -Method POST -Headers @{ "Content-Type" = "application/json"; "Authorization" = "Bearer $token" } -Body '{ "name": "Pizza", "preis": 9.99 }'
 
 #### Bestellung anlegen (Produkt-ID anpassen)
 
@@ -162,6 +171,9 @@ curl -X POST http://127.0.0.1:8000/api/bestellungen/ \
 	-H "Content-Type: application/json" \
 	-d "{\"produkt\": 1, \"menge\": 2, \"kunde\": \"Max Mustermann\"}"
 
+#### Alle Bestellungen mit Authetifizierung
+
+Invoke-WebRequest -Uri "http://localhost:8000/api/produkte/" -Headers @{ "Authorization" = "Bearer $token" }
 
 #### Alle Produkte anzeigen
 
