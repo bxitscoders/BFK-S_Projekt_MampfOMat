@@ -57,28 +57,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-# Temporary development database: use SQLite to avoid MariaDB version issues
-# Switch back to your MySQL/MariaDB settings after upgrading the server.
+
+# MariaDB/MySQL Datenbank-Einstellungen
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "Mampf",
+        "USER": "root",
+        "PASSWORD": "deinpasswort123",
+        "HOST": "localhost",
+        "PORT": "3307",
+        "OPTIONS": {"init_command": "SET sql_mode='STRICT_TRANS_TABLES'"},
     }
 }
-
-#Old Databse settings for MySQL/MariaDB
-
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.mysql",
-#         "NAME": "Mampf",
-#         "USER": "mampfuser",        # dein DB‑User (oder 'root')
-#         "PASSWORD": "dein_passwort",
-#         "HOST": "localhost",
-#         "PORT": "3306",
-#         "OPTIONS": {"init_command": "SET sql_mode='STRICT_TRANS_TABLES'"},
-#     }
-# }
 
 
 STATIC_URL = "/static/"
@@ -93,6 +84,6 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": (
-        "rest_framework.permissions.IsAuthenticatedOrReadOnly",
+        "rest_framework.permissions.AllowAny",
     ),
 }

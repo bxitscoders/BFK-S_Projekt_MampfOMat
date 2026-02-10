@@ -6,8 +6,9 @@ def get_connection():
     return mysql.connector.connect(
         host="localhost",
         user="root",
-        password="",
-        database="Mampf"
+        password="deinpasswort123",
+        database="Mampf",
+        port=3307
     )
 
 # Produkte abrufen
