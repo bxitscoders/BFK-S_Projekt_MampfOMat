@@ -1,5 +1,5 @@
-# Datenbank (lokal, nicht in Git)
-db.sqlite3
+# Datenbank - db.sqlite3 wird jetzt mit den initialen Daten gepusht
+# db.sqlite3
 *.db
 
 # Python
