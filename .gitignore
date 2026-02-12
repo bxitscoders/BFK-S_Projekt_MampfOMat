@@ -1,0 +1,35 @@
+# Datenbank (lokal, nicht in Git)
+db.sqlite3
+*.db
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Virtual Environment
+.venv/
+.env
+
+# Temporäre Dateien
+*.tmp
+*.bak
