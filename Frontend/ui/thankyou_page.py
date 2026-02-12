@@ -89,6 +89,11 @@ class ThankYouPage(tk.Frame):
         self.qr_label = tk.Label(right_frame, bg=COLORS['background_main'])
         self.qr_label.pack()
         self.pdf_path = None
+        
+        # YouTube QR unten rechts (klein)
+        self.youtube_qr_label = tk.Label(self, bg=COLORS['background_main'])
+        # Positioniere unten-rechts mit Platzierung
+        self.youtube_qr_label.place(relx=1.0, rely=1.0, anchor='se', x=-20, y=-20)
     
     def start_new_order(self):
         """Startet eine neue Bestellung (leert Warenkorb)"""
@@ -174,6 +179,16 @@ class ThankYouPage(tk.Frame):
         # Verwende mittlere Fehlerkorrektur, kleinere box_size für längere Texte
         qr = qrcode.QRCode(box_size=2, border=2, error_correction=qrcode.constants.ERROR_CORRECT_M)
         qr.add_data(text)
+        qr.make(fit=True)
+        img = qr.make_image(fill_color="black", back_color="white").convert('RGB')
+        img = img.resize((size, size), Image.Resampling.LANCZOS)
+        return img
+
+    def _generate_simple_qr(self, url, size=120):
+        """Kompatible einfache QR-Generierung für kurze URLs (YouTube)."""
+        # Verwende größere box_size für bessere Scanbarkeit bei kurzen URLs
+        qr = qrcode.QRCode(box_size=6, border=2, error_correction=qrcode.constants.ERROR_CORRECT_M)
+        qr.add_data(url)
         qr.make(fit=True)
         img = qr.make_image(fill_color="black", back_color="white").convert('RGB')
         img = img.resize((size, size), Image.Resampling.LANCZOS)

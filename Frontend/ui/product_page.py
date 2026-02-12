@@ -9,6 +9,7 @@ class ProductPage(tk.Frame):
         self.controller = controller
         self.product = None
         self.product_image = None
+        self.qty_display = None  # Initialisieren als None
         
         self.create_layout()
 
@@ -74,9 +75,30 @@ class ProductPage(tk.Frame):
         self.create_details_section(content_frame)
 
     def create_breadcrumb(self, parent):
-        """Erstellt die Breadcrumb-Navigation"""
-        breadcrumb_frame = tk.Frame(parent, bg='#e5ddd5')
-        breadcrumb_frame.pack(fill="x", pady=(0, 20))
+        """Erstellt die Navigation mit Zurück-Button oben links"""
+        nav_frame = tk.Frame(parent, bg='#e5ddd5')
+        nav_frame.pack(fill="x", pady=(0, 20))
+        
+        # Zurück Button LINKS
+        back_btn = tk.Button(
+            nav_frame,
+            text="← Zurück",
+            font=FONTS['body_medium'],
+            fg='white',
+            bg=COLORS['accent_blue'],
+            activebackground='#1E88E5',
+            relief='flat',
+            bd=0,
+            cursor='hand2',
+            padx=15,
+            pady=8,
+            command=lambda: self.controller.show_frame("HomePage")
+        )
+        back_btn.pack(side="left", padx=(0, 20))
+        
+        # Breadcrumb-Navigation RECHTS
+        breadcrumb_frame = tk.Frame(nav_frame, bg='#e5ddd5')
+        breadcrumb_frame.pack(side="left", fill="x", expand=True)
         
         # Home Link
         home_link = tk.Label(
@@ -261,31 +283,85 @@ class ProductPage(tk.Frame):
         purchase_content = tk.Frame(purchase_frame, bg=COLORS['background_hover'])
         purchase_content.pack(fill="both", expand=True, padx=20, pady=20)
         
-        quantity_frame = tk.Frame(purchase_content, bg=COLORS['background_hover'])
-        quantity_frame.pack(fill="x", pady=(0, 15))
+        # Großer Mengen-Regler für Touch-Displays - NEUES DESIGN
+        quantity_section = tk.Frame(purchase_content, bg=COLORS['background_hover'])
+        quantity_section.pack(fill="x", pady=(0, 20))
         
         qty_label = tk.Label(
-            quantity_frame,
-            text="Menge:",
-            font=FONTS['body_medium'],
+            quantity_section,
+            text="Menge wählen:",
+            font=FONTS['heading_small'],
             fg=COLORS['text_primary'],
             bg=COLORS['background_hover']
         )
-        qty_label.pack(side="left")
+        qty_label.pack(anchor="w", pady=(0, 10))
+        
+        # Quantity Controls - Modernes Design mit großen runden Buttons
+        quantity_controls = tk.Frame(quantity_section, bg='white', relief='solid', bd=1)
+        quantity_controls.pack(fill="x", pady=5)
+        
+        quantity_inner = tk.Frame(quantity_controls, bg='white')
+        quantity_inner.pack(fill="both", expand=True, padx=15, pady=15)
         
         self.qty_var = tk.IntVar(value=1)
-        qty_spinbox = tk.Spinbox(
-            quantity_frame,
-            from_=1,
-            to=10,
-            textvariable=self.qty_var,
-            width=8,
-            font=FONTS['body_medium'],
-            relief='solid',
-            bd=1,
-            bg='white'
+        
+        # Minus Button - Moderneres Design
+        minus_btn = tk.Button(
+            quantity_inner,
+            text="−",
+            font=('Arial', 28, 'bold'),
+            width=5,
+            height=1,
+            fg='white',
+            bg='#E53935',
+            activebackground='#C62828',
+            relief='flat',
+            bd=0,
+            cursor='hand2',
+            command=self.decrease_quantity
         )
-        qty_spinbox.pack(side="left", padx=(10, 0))
+        minus_btn.pack(side="left", padx=10)
+        
+        # Menge Display - Großer Text
+        display_frame = tk.Frame(quantity_inner, bg='white')
+        display_frame.pack(side="left", expand=True, fill="both", padx=20)
+        
+        self.qty_display = tk.Label(
+            display_frame,
+            text="1",
+            font=('Arial', 32, 'bold'),
+            fg=COLORS['accent_blue'],
+            bg='white',
+            anchor='center'
+        )
+        self.qty_display.pack(expand=True)
+        
+        qty_text = tk.Label(
+            display_frame,
+            text="Stück",
+            font=('Arial', 12),
+            fg=COLORS['text_secondary'],
+            bg='white',
+            anchor='center'
+        )
+        qty_text.pack()
+        
+        # Plus Button - Moderneres Design
+        plus_btn = tk.Button(
+            quantity_inner,
+            text="➕",
+            font=('Arial', 24),
+            width=5,
+            height=1,
+            fg='white',
+            bg=COLORS['button_success'],
+            activebackground='#2E7D32',
+            relief='flat',
+            bd=0,
+            cursor='hand2',
+            command=self.increase_quantity
+        )
+        plus_btn.pack(side="right", padx=10)
         
         self.total_price_label = tk.Label(
             purchase_content,
@@ -295,7 +371,7 @@ class ProductPage(tk.Frame):
             bg=COLORS['background_hover'],
             anchor='w'
         )
-        self.total_price_label.pack(anchor="w", pady=(0, 20))
+        self.total_price_label.pack(anchor="w", pady=(15, 20))
         
         button_frame = tk.Frame(purchase_content, bg=COLORS['background_hover'])
         button_frame.pack(fill="x")
@@ -315,14 +391,6 @@ class ProductPage(tk.Frame):
             command=self.buy_now
         )
         buy_now_btn.pack(fill="x")
-        
-        back_btn = create_modern_button(
-            purchase_content,
-            "← Zurück zur Übersicht",
-            style='secondary',
-            command=lambda: self.controller.show_frame("HomePage")
-        )
-        back_btn.pack(pady=(20, 0))
 
     def create_additional_info(self, parent):
         """Erstellt zusätzliche Produktinformationen für mehr Content - WhatsApp-Style"""
@@ -539,11 +607,13 @@ class ProductPage(tk.Frame):
         description = product.get('description', f'Leckere {product["name"]} – frisch gebacken!')
         self.desc_label.configure(text=description)
 
+        # Menge zurücksetzen auf 1
+        self.qty_var.set(1)
+        if self.qty_display:  # Nur aktualisieren wenn existiert
+            self.qty_display.configure(text="1")
+
         # Gesamtpreis initial berechnen
         self.update_total_price()
-
-        # Menge-Änderung überwachen
-        self.qty_var.trace('w', lambda *args: self.update_total_price())
 
     def load_product_image(self, product):
         """Lädt und skaliert das Produktbild"""
@@ -565,6 +635,24 @@ class ProductPage(tk.Frame):
                 font=FONTS['body_large'],
                 fg=COLORS['text_secondary']
             )
+
+    def increase_quantity(self):
+        """Erhöht die Menge um 1 (max 99)"""
+        current = self.qty_var.get()
+        if current < 99:
+            self.qty_var.set(current + 1)
+            if self.qty_display:
+                self.qty_display.configure(text=str(current + 1))
+            self.update_total_price()
+
+    def decrease_quantity(self):
+        """Verringert die Menge um 1 (min 1)"""
+        current = self.qty_var.get()
+        if current > 1:
+            self.qty_var.set(current - 1)
+            if self.qty_display:
+                self.qty_display.configure(text=str(current - 1))
+            self.update_total_price()
 
     def update_total_price(self):
         """Aktualisiert den Gesamtpreis basierend auf der Menge"""
