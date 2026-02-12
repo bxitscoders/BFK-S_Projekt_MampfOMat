@@ -9,6 +9,7 @@ class ProductPage(tk.Frame):
         self.controller = controller
         self.product = None
         self.product_image = None
+        self.qty_display = None  # Initialisieren als None
         
         self.create_layout()
 
@@ -580,7 +581,8 @@ class ProductPage(tk.Frame):
 
         # Menge zurücksetzen auf 1
         self.qty_var.set(1)
-        self.qty_display.configure(text="1")
+        if self.qty_display:  # Nur aktualisieren wenn existiert
+            self.qty_display.configure(text="1")
 
         # Gesamtpreis initial berechnen
         self.update_total_price()
@@ -611,7 +613,8 @@ class ProductPage(tk.Frame):
         current = self.qty_var.get()
         if current < 10:
             self.qty_var.set(current + 1)
-            self.qty_display.configure(text=str(current + 1))
+            if self.qty_display:
+                self.qty_display.configure(text=str(current + 1))
             self.update_total_price()
 
     def decrease_quantity(self):
@@ -619,7 +622,8 @@ class ProductPage(tk.Frame):
         current = self.qty_var.get()
         if current > 1:
             self.qty_var.set(current - 1)
-            self.qty_display.configure(text=str(current - 1))
+            if self.qty_display:
+                self.qty_display.configure(text=str(current - 1))
             self.update_total_price()
 
     def update_total_price(self):
