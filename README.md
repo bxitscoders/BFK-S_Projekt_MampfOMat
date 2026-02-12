@@ -48,23 +48,33 @@ MampfOMat/
 └── README.md               # Das hier
 
 
-## Ausprobieren
+## Schnellstart
 
-Du brauchst:
-- Python (3.7 oder neuer)
-- Pillow für die Bilder: `pip install pillow`
+- Abhängigkeiten aus `requirements.txt` instalieren.
 
-Dann einfach:
+**Option 1: Frontend (GUI mit Tkinter)**
 
+```bash
 git clone https://github.com/bxitscoders/BFK-S_Projekt_MampfOMat.git
-cd BFK-S_Projekt_MampfOMat/Frontend
+cd BFK-S_Projekt_MampfOMat
+.venv\Scripts\Activate
+pip install -r requirements.txt
+cd Frontend
 python main.py
+```
 
-Für die DB: 
-XAMPP starten ->  Apache und MySQL starten ->  http://localhost/phpmyadmin/ -> Importieren klicken -> setup.sql Datei wählen - > OK --> Datenbank mampf
+**Option 2: Backend (Django REST API)**
 
+```bash
+git clone https://github.com/bxitscoders/BFK-S_Projekt_MampfOMat.git
+cd BFK-S_Projekt_MampfOMat
+.venv\Scripts\Activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver
+```
 
-Das wars schon.
+Die API läuft dann auf `http://127.0.0.1:8000/`
 
 ## Was wir gelernt haben
 
@@ -73,6 +83,8 @@ Das wars schon.
 - Ein gutes Design braucht Zeit
 - SQLite reicht für fast alles aus
 - Teamwork funktioniert besser mit Git
+- MariaDB im zusammenhang mit Xampp funktioniert nicht gut
+- Keine leeren Passwörter vergeben
 
 ## Team
 
@@ -103,62 +115,44 @@ Falls Fragen sind oder was nicht läuft, einfach melden.
 
 ---
 
-## Installationen:
+## Setup für Backend-Entwicklung
 
-Damit django richtig funktioniert wurde ein requiremnets.txt erstellt. In dieser sind die Dependencies hinterlegt.
+### 1. Virtuelle Umgebung aktivieren
+```bash
+.venv\Scripts\Activate
+```
 
-Die Dependencies werden aus dem root projekt Verzeichniss installiert.
+### 2. Dependencies installieren
+```bash
+pip install -r requirements.txt
+```
 
-$ .venv\Scripts\Activate
+### 3. Datenbank initialisieren
+```bash
+python manage.py migrate
+```
+Dieser Befehl wendet alle Migrationen an und erstellt die Datenbanktabellen.
 
-$ cd <root prject>
+### 4. Django-Entwicklungsserver starten
+```bash
+python manage.py runserver
+```
+Die API läuft dann unter `http://127.0.0.1:8000/`
 
-$ pip install -r requirements.txt
+### Optional: Neue Migrations erstellen
+Falls das Datenmodell geändert wird:
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
 
-Wenn die Datenbak eingerichtet werden muss:
+### Datenbank-Optionen
+- **Standard**: SQLite (db.sqlite3) - funktioniert sofort, keine weitere Konfiguration nötig
+- **Optional**: MySQL/MariaDB - für den Produktivbetrieb empfohlen, benötigt zusätzliche Konfiguration
 
-$ python manage.py makemigrations
-
-$ python manage.py migrate
-
-Um runserver zu starten:
-
-$ cd config
-
-$ python .\manage.py runserver
+Die `setup.sql` ist für manuelles MySQL-Import (veraltet), verwende lieber `python manage.py migrate`.
 
 ## REST API Endpunkte
-
-### PowerShell Befehle
-
-#### GET - Alle Produkte anzeigen
-```powershell
-Invoke-WebRequest -Uri "http://127.0.0.1:8000/api/produkte/" | Select-Object -ExpandProperty Content
-```
-
-#### GET - Einzelnes Produkt (ID=1)
-```powershell
-Invoke-WebRequest -Uri "http://127.0.0.1:8000/api/produkte/1/" | Select-Object -ExpandProperty Content
-```
-
-#### POST - Neues Produkt erstellen
-```powershell
-$body = @{ 
-    name="Pizza Margherita"
-    beschreibung="Klassische Pizza mit Mozzarella und Basilikum"
-    preis=12.99 
-} | ConvertTo-Json
-
-Invoke-WebRequest -Uri "http://127.0.0.1:8000/api/produkte/" `
-  -Method POST `
-  -ContentType "application/json" `
-  -Body $body
-```
-
-#### DELETE - Produkt löschen (ID=1)
-```powershell
-Invoke-WebRequest -Uri "http://127.0.0.1:8000/api/produkte/1/" -Method DELETE
-```
 
 #### POST - Neue Bestellung erstellen
 ```powershell
@@ -184,50 +178,6 @@ Invoke-WebRequest -Uri "http://127.0.0.1:8000/api/bestellungen/1/" -Method DELET
 ```
 
 ---
-
-### Datenbank überprüfen
-
-#### Alle Produkte anzeigen (Django Shell)
-```powershell
-cd c:\Users\O5H\OneDrive -it.schule Stuttgart\Dokumente\Projekt\BFK-S_Projekt_MampfOMat
-.\.venv\Scripts\python config\manage.py shell
-```
-
-Dann in der Shell:
-```python
-from api.models import Product
-for p in Product.objects.all():
-    print(f"ID: {p.id}, Name: {p.name}, Preis: {p.preis}€, Beschreibung: {p.beschreibung}")
-```
-
-#### Alle Bestellungen anzeigen 
-```python
-from api.models import Order
-for o in Order.objects.all():
-    print(f"ID: {o.id}, Produkt: {o.produkt.name}, Menge: {o.menge}, Timestamp: {o.timestamp}")
-```
-
-#### Produkt-Anzahl zählen
-```python
-from api.models import Product, Order
-print(f"Produkte: {Product.objects.count()}")
-print(f"Bestellungen: {Order.objects.count()}")
-```
-
-#### Datenbank leeren (Vorsicht!)
-```python
-from api.models import Product, Order
-Product.objects.all().delete()
-Order.objects.all().delete()
-print("Datenbank geleert!")
-```
-
-#### Aus der Shell zurück zur PowerShell
-```python
-exit()
-```
-
-
 
 ### REST API Endpunkte Übersicht
 
