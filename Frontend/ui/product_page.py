@@ -262,70 +262,85 @@ class ProductPage(tk.Frame):
         purchase_content = tk.Frame(purchase_frame, bg=COLORS['background_hover'])
         purchase_content.pack(fill="both", expand=True, padx=20, pady=20)
         
-        # NEUE: Großer Mengen-Regler für Touch-Displays
-        quantity_frame = tk.Frame(purchase_content, bg=COLORS['background_hover'])
-        quantity_frame.pack(fill="x", pady=(0, 20))
+        # Großer Mengen-Regler für Touch-Displays - NEUES DESIGN
+        quantity_section = tk.Frame(purchase_content, bg=COLORS['background_hover'])
+        quantity_section.pack(fill="x", pady=(0, 20))
         
         qty_label = tk.Label(
-            quantity_frame,
-            text="Menge:",
-            font=FONTS['body_medium'],
+            quantity_section,
+            text="Menge wählen:",
+            font=FONTS['heading_small'],
             fg=COLORS['text_primary'],
             bg=COLORS['background_hover']
         )
-        qty_label.pack(side="left", padx=(0, 15))
+        qty_label.pack(anchor="w", pady=(0, 10))
         
-        # Quantity Controls mit großen Buttons für Touch
-        quantity_controls = tk.Frame(quantity_frame, bg=COLORS['background_hover'])
-        quantity_controls.pack(side="left")
+        # Quantity Controls - Modernes Design mit großen runden Buttons
+        quantity_controls = tk.Frame(quantity_section, bg='white', relief='solid', bd=1)
+        quantity_controls.pack(fill="x", pady=5)
+        
+        quantity_inner = tk.Frame(quantity_controls, bg='white')
+        quantity_inner.pack(fill="both", expand=True, padx=15, pady=15)
         
         self.qty_var = tk.IntVar(value=1)
         
-        # Minus Button - GROSSE Taste für Finger
+        # Minus Button - Moderneres Design
         minus_btn = tk.Button(
-            quantity_controls,
-            text="−",
-            font=('Arial', 20, 'bold'),
-            width=4,
-            height=2,
+            quantity_inner,
+            text="❌",
+            font=('Arial', 24),
+            width=5,
+            height=1,
             fg='white',
-            bg=COLORS['accent_blue'],
-            activebackground='#1E88E5',
-            relief='raised',
-            bd=2,
+            bg='#E53935',
+            activebackground='#C62828',
+            relief='flat',
+            bd=0,
+            cursor='hand2',
             command=self.decrease_quantity
         )
-        minus_btn.pack(side="left", padx=5)
+        minus_btn.pack(side="left", padx=10)
         
-        # Menge Display - IN DER MITTE
+        # Menge Display - Großer Text
+        display_frame = tk.Frame(quantity_inner, bg='white')
+        display_frame.pack(side="left", expand=True, fill="both", padx=20)
+        
         self.qty_display = tk.Label(
-            quantity_controls,
+            display_frame,
             text="1",
-            font=('Arial', 18, 'bold'),
-            width=3,
-            height=2,
-            fg=COLORS['text_primary'],
+            font=('Arial', 32, 'bold'),
+            fg=COLORS['accent_blue'],
             bg='white',
-            relief='sunken',
-            bd=2
+            anchor='center'
         )
-        self.qty_display.pack(side="left", padx=5)
+        self.qty_display.pack(expand=True)
         
-        # Plus Button - GROSSE Taste für Finger
+        qty_text = tk.Label(
+            display_frame,
+            text="Stück",
+            font=('Arial', 12),
+            fg=COLORS['text_secondary'],
+            bg='white',
+            anchor='center'
+        )
+        qty_text.pack()
+        
+        # Plus Button - Moderneres Design
         plus_btn = tk.Button(
-            quantity_controls,
-            text="+",
-            font=('Arial', 20, 'bold'),
-            width=4,
-            height=2,
+            quantity_inner,
+            text="➕",
+            font=('Arial', 24),
+            width=5,
+            height=1,
             fg='white',
             bg=COLORS['button_success'],
-            activebackground='#43A047',
-            relief='raised',
-            bd=2,
+            activebackground='#2E7D32',
+            relief='flat',
+            bd=0,
+            cursor='hand2',
             command=self.increase_quantity
         )
-        plus_btn.pack(side="left", padx=5)
+        plus_btn.pack(side="right", padx=10)
         
         self.total_price_label = tk.Label(
             purchase_content,
@@ -335,7 +350,7 @@ class ProductPage(tk.Frame):
             bg=COLORS['background_hover'],
             anchor='w'
         )
-        self.total_price_label.pack(anchor="w", pady=(0, 20))
+        self.total_price_label.pack(anchor="w", pady=(15, 20))
         
         button_frame = tk.Frame(purchase_content, bg=COLORS['background_hover'])
         button_frame.pack(fill="x")
