@@ -261,8 +261,9 @@ class ProductPage(tk.Frame):
         purchase_content = tk.Frame(purchase_frame, bg=COLORS['background_hover'])
         purchase_content.pack(fill="both", expand=True, padx=20, pady=20)
         
+        # NEUE: Großer Mengen-Regler für Touch-Displays
         quantity_frame = tk.Frame(purchase_content, bg=COLORS['background_hover'])
-        quantity_frame.pack(fill="x", pady=(0, 15))
+        quantity_frame.pack(fill="x", pady=(0, 20))
         
         qty_label = tk.Label(
             quantity_frame,
@@ -271,21 +272,59 @@ class ProductPage(tk.Frame):
             fg=COLORS['text_primary'],
             bg=COLORS['background_hover']
         )
-        qty_label.pack(side="left")
+        qty_label.pack(side="left", padx=(0, 15))
+        
+        # Quantity Controls mit großen Buttons für Touch
+        quantity_controls = tk.Frame(quantity_frame, bg=COLORS['background_hover'])
+        quantity_controls.pack(side="left")
         
         self.qty_var = tk.IntVar(value=1)
-        qty_spinbox = tk.Spinbox(
-            quantity_frame,
-            from_=1,
-            to=10,
-            textvariable=self.qty_var,
-            width=8,
-            font=FONTS['body_medium'],
-            relief='solid',
-            bd=1,
-            bg='white'
+        
+        # Minus Button - GROSSE Taste für Finger
+        minus_btn = tk.Button(
+            quantity_controls,
+            text="−",
+            font=('Arial', 20, 'bold'),
+            width=4,
+            height=2,
+            fg='white',
+            bg=COLORS['accent_blue'],
+            activebackground='#1E88E5',
+            relief='raised',
+            bd=2,
+            command=self.decrease_quantity
         )
-        qty_spinbox.pack(side="left", padx=(10, 0))
+        minus_btn.pack(side="left", padx=5)
+        
+        # Menge Display - IN DER MITTE
+        self.qty_display = tk.Label(
+            quantity_controls,
+            text="1",
+            font=('Arial', 18, 'bold'),
+            width=3,
+            height=2,
+            fg=COLORS['text_primary'],
+            bg='white',
+            relief='sunken',
+            bd=2
+        )
+        self.qty_display.pack(side="left", padx=5)
+        
+        # Plus Button - GROSSE Taste für Finger
+        plus_btn = tk.Button(
+            quantity_controls,
+            text="+",
+            font=('Arial', 20, 'bold'),
+            width=4,
+            height=2,
+            fg='white',
+            bg=COLORS['button_success'],
+            activebackground='#43A047',
+            relief='raised',
+            bd=2,
+            command=self.increase_quantity
+        )
+        plus_btn.pack(side="left", padx=5)
         
         self.total_price_label = tk.Label(
             purchase_content,
@@ -539,11 +578,12 @@ class ProductPage(tk.Frame):
         description = product.get('description', f'Leckere {product["name"]} – frisch gebacken!')
         self.desc_label.configure(text=description)
 
+        # Menge zurücksetzen auf 1
+        self.qty_var.set(1)
+        self.qty_display.configure(text="1")
+
         # Gesamtpreis initial berechnen
         self.update_total_price()
-
-        # Menge-Änderung überwachen
-        self.qty_var.trace('w', lambda *args: self.update_total_price())
 
     def load_product_image(self, product):
         """Lädt und skaliert das Produktbild"""
@@ -565,6 +605,22 @@ class ProductPage(tk.Frame):
                 font=FONTS['body_large'],
                 fg=COLORS['text_secondary']
             )
+
+    def increase_quantity(self):
+        """Erhöht die Menge um 1 (max 10)"""
+        current = self.qty_var.get()
+        if current < 10:
+            self.qty_var.set(current + 1)
+            self.qty_display.configure(text=str(current + 1))
+            self.update_total_price()
+
+    def decrease_quantity(self):
+        """Verringert die Menge um 1 (min 1)"""
+        current = self.qty_var.get()
+        if current > 1:
+            self.qty_var.set(current - 1)
+            self.qty_display.configure(text=str(current - 1))
+            self.update_total_price()
 
     def update_total_price(self):
         """Aktualisiert den Gesamtpreis basierend auf der Menge"""
