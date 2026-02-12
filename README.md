@@ -129,60 +129,119 @@ $ python .\manage.py runserver
 
 ## REST API Endpunkte
 
-# Neu
+### PowerShell Befehle
 
-# GET - Alle Produkte
+#### GET - Alle Produkte anzeigen
+```powershell
 Invoke-WebRequest -Uri "http://127.0.0.1:8000/api/produkte/" | Select-Object -ExpandProperty Content
+```
 
-# POST - Neues Produkt
-$body = @{ name="Pizza"; beschreibung="Lecker"; preis=12.99 } | ConvertTo-Json
-Invoke-WebRequest -Uri "http://127.0.0.1:8000/api/produkte/" -Method POST -ContentType "application/json" -Body $body
+#### GET - Einzelnes Produkt (ID=1)
+```powershell
+Invoke-WebRequest -Uri "http://127.0.0.1:8000/api/produkte/1/" | Select-Object -ExpandProperty Content
+```
 
-# DELETE - Produkt löschen
+#### POST - Neues Produkt erstellen
+```powershell
+$body = @{ 
+    name="Pizza Margherita"
+    beschreibung="Klassische Pizza mit Mozzarella und Basilikum"
+    preis=12.99 
+} | ConvertTo-Json
+
+Invoke-WebRequest -Uri "http://127.0.0.1:8000/api/produkte/" `
+  -Method POST `
+  -ContentType "application/json" `
+  -Body $body
+```
+
+#### DELETE - Produkt löschen (ID=1)
+```powershell
 Invoke-WebRequest -Uri "http://127.0.0.1:8000/api/produkte/1/" -Method DELETE
+```
+
+#### POST - Neue Bestellung erstellen
+```powershell
+$body = @{ 
+    produkt=1
+    menge=2
+} | ConvertTo-Json
+
+Invoke-WebRequest -Uri "http://127.0.0.1:8000/api/bestellungen/" `
+  -Method POST `
+  -ContentType "application/json" `
+  -Body $body
+```
+
+#### GET - Alle Bestellungen anzeigen
+```powershell
+Invoke-WebRequest -Uri "http://127.0.0.1:8000/api/bestellungen/" | Select-Object -ExpandProperty Content
+```
+
+#### DELETE - Bestellung löschen (ID=1)
+```powershell
+Invoke-WebRequest -Uri "http://127.0.0.1:8000/api/bestellungen/1/" -Method DELETE
+```
+
+---
+
+### Datenbank überprüfen
+
+#### Alle Produkte anzeigen (Django Shell)
+```powershell
+cd c:\Users\O5H\OneDrive -it.schule Stuttgart\Dokumente\Projekt\BFK-S_Projekt_MampfOMat
+.\.venv\Scripts\python config\manage.py shell
+```
+
+Dann in der Shell:
+```python
+from api.models import Product
+for p in Product.objects.all():
+    print(f"ID: {p.id}, Name: {p.name}, Preis: {p.preis}€, Beschreibung: {p.beschreibung}")
+```
+
+#### Alle Bestellungen anzeigen 
+```python
+from api.models import Order
+for o in Order.objects.all():
+    print(f"ID: {o.id}, Produkt: {o.produkt.name}, Menge: {o.menge}, Timestamp: {o.timestamp}")
+```
+
+#### Produkt-Anzahl zählen
+```python
+from api.models import Product, Order
+print(f"Produkte: {Product.objects.count()}")
+print(f"Bestellungen: {Order.objects.count()}")
+```
+
+#### Datenbank leeren (Vorsicht!)
+```python
+from api.models import Product, Order
+Product.objects.all().delete()
+Order.objects.all().delete()
+print("Datenbank geleert!")
+```
+
+#### Aus der Shell zurück zur PowerShell
+```python
+exit()
+```
 
 
 
-Produkte:
+### REST API Endpunkte Übersicht
 
-	- Alle Produkte: GET /api/produkte/
-	- Einzelnes Produkt: GET /api/produkte/<id>/
-	- Produkt anlegen: POST /api/produkte/
-	- Produkt ändern: PUT /api/produkte/<id>/
-	- Produkt löschen: DELETE /api/produkte/<id>/
-    Bsp: http://127.0.0.1:8000/api/produkte/
+**Produkte:**
+- `GET /api/produkte/` - Alle Produkte
+- `GET /api/produkte/<id>/` - Einzelnes Produkt
+- `POST /api/produkte/` - Neues Produkt erstellen
+- `PUT /api/produkte/<id>/` - Produkt bearbeiten
+- `DELETE /api/produkte/<id>/` - Produkt löschen
 
-Bestellungen:
-
-	- Alle Bestellungen: GET /api/bestellungen/
-	- Einzelne Bestellung: GET /api/bestellungen/<id>/
-	- Bestellung anlegen: POST /api/bestellungen/
-	- Bestellung ändern: PUT /api/bestellungen/<id>/
-	- Bestellung löschen: DELETE /api/bestellungen/<id>/
-    Bsp: http://127.0.0.1:8000/api/bestellungen/1/
-
-### Beispiel-Requests (curl)
-
-#### Produkt anlegen
-
-curl -X POST http://127.0.0.1:8000/api/produkte/ \
-	-H "Content-Type: application/json" \
-	-d "{\"name\": \"Pizza\", \"preis\": \"7.99\", \"beschreibung\": \"Lecker\"}"
-
-
-#### Bestellung anlegen (Produkt-ID anpassen)
-
-curl -X POST http://127.0.0.1:8000/api/bestellungen/ \
-	-H "Content-Type: application/json" \
-	-d "{\"produkt\": 1, \"menge\": 2, \"kunde\": \"Max Mustermann\"}"
-
-
-#### Alle Produkte anzeigen
-
-curl http://127.0.0.1:8000/api/produkte/
-
-
-#### Alle Bestellungen anzeigen
-
-curl http://127.0.0.1:8000/api/bestellungen/
+**Bestellungen:**
+- `GET /api/bestellungen/` - Alle Bestellungen
+- `GET /api/bestellungen/<id>/` - Einzelne Bestellung
+- `POST /api/bestellungen/` - Neue Bestellung erstellen
+- `PUT /api/bestellungen/<id>/` - Bestellung bearbeiten
+- `DELETE /api/bestellungen/<id>/` - Bestellung löschen
 
