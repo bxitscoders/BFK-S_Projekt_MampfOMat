@@ -75,9 +75,30 @@ class ProductPage(tk.Frame):
         self.create_details_section(content_frame)
 
     def create_breadcrumb(self, parent):
-        """Erstellt die Breadcrumb-Navigation"""
-        breadcrumb_frame = tk.Frame(parent, bg='#e5ddd5')
-        breadcrumb_frame.pack(fill="x", pady=(0, 20))
+        """Erstellt die Navigation mit Zurück-Button oben links"""
+        nav_frame = tk.Frame(parent, bg='#e5ddd5')
+        nav_frame.pack(fill="x", pady=(0, 20))
+        
+        # Zurück Button LINKS
+        back_btn = tk.Button(
+            nav_frame,
+            text="← Zurück",
+            font=FONTS['body_medium'],
+            fg='white',
+            bg=COLORS['accent_blue'],
+            activebackground='#1E88E5',
+            relief='flat',
+            bd=0,
+            cursor='hand2',
+            padx=15,
+            pady=8,
+            command=lambda: self.controller.show_frame("HomePage")
+        )
+        back_btn.pack(side="left", padx=(0, 20))
+        
+        # Breadcrumb-Navigation RECHTS
+        breadcrumb_frame = tk.Frame(nav_frame, bg='#e5ddd5')
+        breadcrumb_frame.pack(side="left", fill="x", expand=True)
         
         # Home Link
         home_link = tk.Label(
@@ -287,8 +308,8 @@ class ProductPage(tk.Frame):
         # Minus Button - Moderneres Design
         minus_btn = tk.Button(
             quantity_inner,
-            text="❌",
-            font=('Arial', 24),
+            text="−",
+            font=('Arial', 28, 'bold'),
             width=5,
             height=1,
             fg='white',
@@ -370,14 +391,6 @@ class ProductPage(tk.Frame):
             command=self.buy_now
         )
         buy_now_btn.pack(fill="x")
-        
-        back_btn = create_modern_button(
-            purchase_content,
-            "← Zurück zur Übersicht",
-            style='secondary',
-            command=lambda: self.controller.show_frame("HomePage")
-        )
-        back_btn.pack(pady=(20, 0))
 
     def create_additional_info(self, parent):
         """Erstellt zusätzliche Produktinformationen für mehr Content - WhatsApp-Style"""
@@ -624,9 +637,9 @@ class ProductPage(tk.Frame):
             )
 
     def increase_quantity(self):
-        """Erhöht die Menge um 1 (max 10)"""
+        """Erhöht die Menge um 1 (max 99)"""
         current = self.qty_var.get()
-        if current < 10:
+        if current < 99:
             self.qty_var.set(current + 1)
             if self.qty_display:
                 self.qty_display.configure(text=str(current + 1))
