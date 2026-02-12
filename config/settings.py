@@ -58,16 +58,11 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 
-# MariaDB/MySQL Datenbank-Einstellungen
+# SQLite Datenbank (lokal, portabel, perfekt für Teamarbeit mit Git)
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "Mampf",
-        "USER": "root",
-        "PASSWORD": "deinpasswort123",
-        "HOST": "localhost",
-        "PORT": "3307",
-        "OPTIONS": {"init_command": "SET sql_mode='STRICT_TRANS_TABLES'"},
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     }
 }
 

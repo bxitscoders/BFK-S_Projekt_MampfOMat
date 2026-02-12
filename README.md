@@ -129,6 +129,20 @@ $ python .\manage.py runserver
 
 ## REST API Endpunkte
 
+# Neu
+
+# GET - Alle Produkte
+Invoke-WebRequest -Uri "http://127.0.0.1:8000/api/produkte/" | Select-Object -ExpandProperty Content
+
+# POST - Neues Produkt
+$body = @{ name="Pizza"; beschreibung="Lecker"; preis=12.99 } | ConvertTo-Json
+Invoke-WebRequest -Uri "http://127.0.0.1:8000/api/produkte/" -Method POST -ContentType "application/json" -Body $body
+
+# DELETE - Produkt löschen
+Invoke-WebRequest -Uri "http://127.0.0.1:8000/api/produkte/1/" -Method DELETE
+
+
+
 Produkte:
 
 	- Alle Produkte: GET /api/produkte/
