@@ -4,11 +4,11 @@ from decimal import Decimal
 # Funktion zum Aufbau der Verbindung
 def get_connection():
     return mysql.connector.connect(
-        host="localhost",
+        host="127.0.0.1",
         user="root",
-        password="deinpasswort123",
+        password="",
         database="Mampf",
-        port=3307
+        port=3306,
     )
 
 # Produkte abrufen
