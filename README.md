@@ -54,7 +54,8 @@ MampfOMat/
 │ ├── manage.py
 │ └── settings.py
 ├── api/
-├── diagramme/
+├── diagramme/        
+├── Praesentation/
 ├── Retros/
 ├── requirements.txt        #Anforderungen
 ├── db.sqlite3              # Datenbank
