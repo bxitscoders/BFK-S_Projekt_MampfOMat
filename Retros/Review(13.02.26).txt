@@ -1,0 +1,26 @@
+Kurznotizen was bei uns gut gelaufen ist und was eher negativ ausgefallen ist.
+
+Gut:
+
+Wir haben gut zusammen gearbeitet, Team war sich in den meisten Fällen einig
+und wir konnten konzentiert und Zielgerecht an unserem Projekt arbeiten.
+
+Probleme haben wir gut und simple gelöst ohne viel zeit zu verlieren
+
+Wir waren schnell fertig und konnten so sehr gut uns um einzelheiten und den Feinschliff des Projekts kümmern.
+
+Wir haben unser Taskboard immer aktuell gehalten.
+
+Die Daily absprachen wurden immer eingehalten, Aufgabenverteilung und klarheit war sehr gut gemanaged.
+
+Projektstrucktur so wie die Dokumentation (ERM,UML,etc) war sehr schnell und super umgesetzt.
+
+Wir haben einheitlich in Python programmiert -> einfach zu inplementieren
+
+
+schlecht:
+
+Klar hatten warhscheinlich alle das Problem mit git, aber leider mussten wir uns damit immer wieder rumärgern.
+
+Dadurch das wir schnell fertig waren haben wir bisschen den Plan verloren, was machen wir jetzt? Was sollen wir noch machen?
+
